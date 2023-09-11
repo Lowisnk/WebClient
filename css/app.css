@@ -98,6 +98,11 @@
 .appLogo {
     height: 40px;
 }
+/* Le icon n'etait pas aligne avec les inputs du formulaire */
+.editLogo {
+    height: 40px;
+    margin-left: -5px;
+}
 
 @media screen and (min-width:650px) {
 
