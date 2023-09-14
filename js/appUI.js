@@ -114,9 +114,10 @@ async function renderDeleteBookmarkForm(id) {
             <div class="bookmarkRow" bookmark_id=${bookmark.Id}">
                 <div class="bookmarkContainer">
                     <div class="bookmarkLayout">
-                        <div class="bookmarkName">${bookmark.Name}</div>
-                        <div class="bookmarkPhone">${bookmark.Phone}</div>
-                        <div class="bookmarkEmail">${bookmark.Email}</div>
+                    <div class="bookmarkTitle">
+                        <img class="logoOther" src="https://s2.googleusercontent.com/s2/favicons?domain=${bookmark.Url}" alt="Favicon">
+                        <b>${bookmark.Title}</b></div>
+                        <div class="bookmarkCategory">${bookmark.Category}</div>
                     </div>
                 </div>  
             </div>   
@@ -230,8 +231,9 @@ function renderBookmark(bookmark) {
      <div class="bookmarkRow" bookmark_id=${bookmark.Id}">
         <div class="bookmarkContainer noselect">
             <div class="bookmarkLayout">
-                <span class="bookmarkTitle">${bookmark.Title}</span>
-                <span class="bookmarkUrl">${bookmark.Url}</span>
+                <span class="bookmarkTitle">
+                    <img class="favicon" src="https://s2.googleusercontent.com/s2/favicons?domain=${bookmark.Url}" alt="Favicon">
+                    <b>${bookmark.Title}</b></span>
                 <span class="bookmarkCategory">${bookmark.Category}</span>
             </div>
             <div class="bookmarkCommandPanel">

@@ -9,7 +9,7 @@
     display: grid;
     grid-template-columns: 4fr 1fr;
     align-items: top;
-    background-color: rgb(87, 140, 255);
+    background-color: #efefee;
     border-radius: 6px;
 }
 
@@ -43,7 +43,9 @@
 .bookmarkEmail {
     color: white;
 }
-
+.bookmarkCategory {
+    color: rgb(59, 156, 255);
+}
 .bookmarkCommandPanel {
     display: flex;
     flex-direction: row;

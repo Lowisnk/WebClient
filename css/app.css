@@ -103,7 +103,10 @@
     height: 40px;
     margin-left: -5px;
 }
-
+.logoOther{
+    height: 25px;
+    margin-top: -10px;
+}
 @media screen and (min-width:650px) {
 
     .contactLayout {
