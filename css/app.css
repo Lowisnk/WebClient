@@ -103,6 +103,9 @@
     height: 40px;
     margin-left: -5px;
 }
+.fa-check{
+    color: rgb(59, 156, 255);
+}
 .logoOther{
     height: 25px;
     margin-top: -10px;

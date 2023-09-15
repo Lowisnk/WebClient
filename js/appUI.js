@@ -1,8 +1,11 @@
 //<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
 let contentScrollPosition = 0;
+addCategories();
 Init_UI();
 
 function Init_UI() {
+    manageCheckCategories();
+    console.log("init");
     renderBookmarks();
     $('#createBookmark').on("click", async function () {
         saveContentScrollPosition();
@@ -16,6 +19,69 @@ function Init_UI() {
     });
 }
 
+async function manageCheckCategories() {
+    let bookmarks = await Bookmarks_API.Get();
+    hideAllCategories();
+    $(".dropdown-item").on("click", function() {
+        const id = $(this).attr("id");
+        console.log("ID choisi : " + id);
+
+        if(id === "All") {
+            $(`#icon${localStorage.getItem("lastCategorySelected")}`).hide();
+            localStorage.setItem("lastCategorySelected", "All");
+            $(`#icon${id}`).show();
+        }
+        else {
+            $("#iconAll").hide();
+            $(`#icon${localStorage.getItem("lastCategorySelected")}`).hide();
+            localStorage.setItem("lastCategorySelected", id);
+            $(`#icon${id}`).show();
+        }
+        renderFilteredBookmark(id);
+        // console.log("lastCategorySelected : " + localStorage.getItem("lastCategorySelected"));
+    });
+}
+async function renderFilteredBookmark(filter) {
+    showWaitingGif();
+    $("#createBookmark").show();
+    $("#abort").hide();
+    let bookmark = await Bookmarks_API.Get();
+    eraseContent();
+    if (bookmark !== null) {
+        if(filter === "All") {
+            $("#actionTitle").text("Liste des favoris");
+            renderBookmarks();
+            return;
+        }
+        bookmark.forEach(bookmark => {
+        if(bookmark.Category.split(" ")[0] === filter){
+            $("#actionTitle").text("Liste des favoris - " + bookmark.Category);
+            $("#content").append(renderBookmark(bookmark));
+        }
+        });
+        restoreContentScrollPosition();
+        // Attached click events on command icons
+        $(".editCmd").on("click", function () {
+            saveContentScrollPosition();
+            renderEditBookmarkForm(parseInt($(this).attr("editBookmarkId")));
+        });
+        $(".deleteCmd").on("click", function () {
+            saveContentScrollPosition();
+            renderDeleteBookmarkForm(parseInt($(this).attr("deleteBookmarkId")));
+        });
+        $(".bookmarkRow").on("click", function (e) { e.preventDefault(); })
+    } else {
+        renderError("Service introuvable");
+    }
+}
+async function hideAllCategories() {
+    let bookmarks = await Bookmarks_API.Get();
+    console.log("manage");
+    bookmarks.forEach(bookmark => {
+        let category = bookmark.Category.split(" ")[0];
+        $(`#icon${category}`).hide();
+    });
+}
 function renderAbout() {
     saveContentScrollPosition();
     eraseContent();
@@ -38,6 +104,22 @@ function renderAbout() {
                 </p>
             </div>
         `))
+}
+async function addCategories() {
+    let bookmarks = await Bookmarks_API.Get();
+    let categories = [];
+    $("#category").empty();
+    bookmarks.forEach(bookmark => {
+        if (!categories.includes(bookmark.Category)) {
+            $("#category").append(renderCategory(bookmark));
+            categories.push(bookmark.Category);
+        }
+    });
+}
+function renderCategory(bookmark) {
+    return $(`<div class="dropdown-item" id=${bookmark.Category}>
+        <i id="icon${bookmark.Category.split(" ")[0].trim()}" class="fa fa-check"></i>${bookmark.Category}
+    </div>`);
 }
 async function renderBookmarks() {
     showWaitingGif();
@@ -129,10 +211,14 @@ async function renderDeleteBookmarkForm(id) {
         $('#deletebookmark').on("click", async function () {
             showWaitingGif();
             let result = await Bookmarks_API.Delete(bookmark.Id);
-            if (result)
+            if (result){
                 renderBookmarks();
-            else
+                addCategories();
+                manageCheckCategories();
+            }
+            else{
                 renderError("Une erreur est survenue!");
+            }
         });
         $('#cancel').on("click", function () {
             renderBookmarks();
@@ -160,7 +246,7 @@ function renderBookmarkForm(bookmark = null) {
     <form class="form" id="bookmarkForm">
     <input type="hidden" name="Id" value="${bookmark.Id}"/>
     
-            <img src="bookmark-logo.svg" class="editLogo" alt="" title="Gestionnaire de bookmarks">
+            <img src="bookmark-logo.svg" id="viewIcon" class="editLogo" alt="" title="Gestionnaire de bookmarks">
             <br><br>
             <label for="Title" class="form-label">Titre </label>
             <input 
@@ -207,10 +293,14 @@ function renderBookmarkForm(bookmark = null) {
         bookmark.Id = parseInt(bookmark.Id);
         showWaitingGif();
         let result = await Bookmarks_API.Save(bookmark, create);
-        if (result)
+        if (result) {
             renderBookmarks();
-        else
+            addCategories();
+            manageCheckCategories();
+        }
+        else {
             renderError("Une erreur est survenue!");
+        }
     });
     $('#cancel').on("click", function () {
         renderBookmarks();
