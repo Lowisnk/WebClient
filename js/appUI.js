@@ -24,7 +24,7 @@ async function manageCheckCategories() {
     hideAllCategories();
     $(".dropdown-item").on("click", function() {
         const id = $(this).attr("id");
-        console.log("ID choisi : " + id);
+        // console.log("ID choisi : " + id);
 
         if(id === "All") {
             $(`#icon${localStorage.getItem("lastCategorySelected")}`).hide();
@@ -60,7 +60,7 @@ async function renderFilteredBookmark(filter) {
         }
         });
         restoreContentScrollPosition();
-        // Attached click events on command icons
+        
         $(".editCmd").on("click", function () {
             saveContentScrollPosition();
             renderEditBookmarkForm(parseInt($(this).attr("editBookmarkId")));
@@ -76,7 +76,6 @@ async function renderFilteredBookmark(filter) {
 }
 async function hideAllCategories() {
     let bookmarks = await Bookmarks_API.Get();
-    console.log("manage");
     bookmarks.forEach(bookmark => {
         let category = bookmark.Category.split(" ")[0];
         $(`#icon${category}`).hide();
@@ -201,12 +200,12 @@ async function renderDeleteBookmarkForm(id) {
                         <b>${bookmark.Title}</b></div>
                         <div class="bookmarkCategory">${bookmark.Category}</div>
                     </div>
-                </div>  
-            </div>   
+                </div>
+            </div>
             <br>
             <input type="button" value="Effacer" id="deletebookmark" class="btn btn-primary">
             <input type="button" value="Annuler" id="cancel" class="btn btn-secondary">
-        </div>    
+        </div>
         `);
         $('#deletebookmark').on("click", async function () {
             showWaitingGif();
@@ -245,18 +244,18 @@ function renderBookmarkForm(bookmark = null) {
     $("#content").append(`
     <form class="form" id="bookmarkForm">
     <input type="hidden" name="Id" value="${bookmark.Id}"/>
-    
+
             <img src="bookmark-logo.svg" id="viewIcon" class="editLogo" alt="" title="Gestionnaire de bookmarks">
             <br><br>
             <label for="Title" class="form-label">Titre </label>
-            <input 
+            <input
                 class="form-control Alpha"
-                name="Title" 
-                id="Title" 
+                name="Title"
+                id="Title"
                 placeholder="Titre"
                 required
                 RequireMessage="Veuillez entrer un titre"
-                InvalidMessage="Le titre comporte un caractère illégal" 
+                InvalidMessage="Le titre comporte un caractère illégal"
                 value="${bookmark.Title}"
             />
             <label for="Url" class="form-label">Url </label>
@@ -266,18 +265,18 @@ function renderBookmarkForm(bookmark = null) {
                 id="Url"
                 placeholder="Url"
                 required
-                RequireMessage="Veuillez entrer un Url" 
+                RequireMessage="Veuillez entrer un Url"
                 InvalidMessage="Veuillez entrer un Url valide"
-                value="${bookmark.Url}" 
+                value="${bookmark.Url}"
             />
             <label for="Category" class="form-label">Catégories </label>
-            <input 
+            <input
                 class="form-control Alpha"
                 name="Category"
                 id="Category"
                 placeholder="Catégories"
                 required
-                RequireMessage="Veuillez entrer votre catégorie" 
+                RequireMessage="Veuillez entrer votre catégorie"
                 InvalidMessage="Veuillez entrer une catégorie valide"
                 value="${bookmark.Category}"
             />
@@ -331,6 +330,6 @@ function renderBookmark(bookmark) {
                 <span class="deleteCmd cmdIcon fa fa-trash" deleteBookmarkId="${bookmark.Id}" title="Effacer ${bookmark.Title}"></span>
             </div>
         </div>
-    </div>           
+    </div>
     `);
 }
